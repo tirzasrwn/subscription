@@ -34,7 +34,7 @@ docker compose down
 
 ### Running Web App
 
-```
+```sh
 # Start the web app.
 make start
 # Stop the web app.
