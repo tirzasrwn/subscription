@@ -2,12 +2,16 @@ package data
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 )
 
 func TestNew(dbPool *sql.DB) Models {
 	db = dbPool
-	return Models{}
+	return Models{
+		User: &UserTest{},
+		Plan: &PlanTest{},
+	}
 }
 
 // User is the structure which holds one user from the database.
@@ -22,6 +26,16 @@ type UserTest struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Plan      *Plan
+}
+
+// Plan is the type for subscription plans
+type PlanTest struct {
+	ID                  int
+	PlanName            string
+	PlanAmount          int
+	PlanAmountFormatted string
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
 }
 
 // GetAll returns a slice of all users, sorted by last name
@@ -94,4 +108,41 @@ func (u *UserTest) ResetPassword(password string) error {
 // and hash match, we return true; otherwise, we return false.
 func (u *UserTest) PasswordMatches(plainText string) (bool, error) {
 	return true, nil
+}
+
+func (p *PlanTest) GetAll() ([]*Plan, error) {
+	var plans []*Plan
+	plan := Plan{
+		ID:         1,
+		PlanName:   "Bronze Plan",
+		PlanAmount: 1000,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+	}
+	plans = append(plans, &plan)
+	return plans, nil
+}
+
+// GetOne returns one plan by id
+func (p *PlanTest) GetOne(id int) (*Plan, error) {
+	plan := Plan{
+		ID:         1,
+		PlanName:   "Bronze Plan",
+		PlanAmount: 1000,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+	}
+	return &plan, nil
+}
+
+// SubscribeUserToPlan subscribes a user to one plan by insert
+// values into user_plans table
+func (p *PlanTest) SubscribeUserToPlan(user User, plan Plan) error {
+	return nil
+}
+
+// AmountForDisplay formats the price we have in the DB as a currency string
+func (p *PlanTest) AmountForDisplay() string {
+	amount := float64(p.PlanAmount) / 100.0
+	return fmt.Sprintf("$%.2f", amount)
 }
