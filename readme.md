@@ -41,6 +41,15 @@ make start
 make stop
 ```
 
+### Run Test
+
+```sh
+go test -coverprofile=coverage.out
+go tool cover -html=coverage.out -o coverage.html
+# Open coverage.html file with your browser to preview.
+open coverage.html
+```
+
 ## Ports
 
 - Go Web App: 8080

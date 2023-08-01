@@ -28,3 +28,4 @@ redis
 myapp
 
 tmp/*.pdf
+coverage*
