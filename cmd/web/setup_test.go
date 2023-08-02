@@ -20,6 +20,8 @@ var testApp Config
 func TestMain(m *testing.M) {
 	fmt.Println("Preparing test environment..")
 	gob.Register(data.User{})
+	tmpPath = "./../../tmp"
+	pathToManual = "./../../pdf"
 	// Set up session
 	session := scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -51,11 +53,14 @@ func TestMain(m *testing.M) {
 	}
 
 	go func() {
-		select {
-		case <-testApp.Mailer.MailerChan:
-		case <-testApp.Mailer.ErrorChan:
-		case <-testApp.Mailer.DoneChan:
-			return
+		for {
+			select {
+			case <-testApp.Mailer.MailerChan:
+				testApp.Wait.Done()
+			case <-testApp.Mailer.ErrorChan:
+			case <-testApp.Mailer.DoneChan:
+				return
+			}
 		}
 	}()
 
